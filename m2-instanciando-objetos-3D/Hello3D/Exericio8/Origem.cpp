@@ -60,6 +60,8 @@ const GLchar* fragmentShaderSource = "#version 450\n"
 bool rotateX=false, rotateY=false, rotateZ=false;
 bool translateX = false, translateY = false, translateZ = false;
 
+float scaleFactor = 1.0f;
+
 // Função MAIN
 int main()
 {
@@ -120,7 +122,6 @@ int main()
 	model = glm::rotate(model, /*(GLfloat)glfwGetTime()*/glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 	glUniformMatrix4fv(modelLoc, 1, FALSE, glm::value_ptr(model));
 
-
 	// Loop da aplicação - "game loop"
 	while (!glfwWindowShouldClose(window))
 	{
@@ -168,6 +169,13 @@ int main()
 			model = glm::translate(model, glm::vec3(0.0f, 0.0f, sin(angle)));
 		}
 
+		// Scale
+		glm::mat4 scaleMatrix = glm::mat4(1.0f);
+		scaleMatrix[0][0] = scaleFactor;
+		scaleMatrix[1][1] = scaleFactor;
+		scaleMatrix[2][2] = scaleFactor;
+		model = model * scaleMatrix;
+
 
 		glUniformMatrix4fv(modelLoc, 1, FALSE, glm::value_ptr(model));
 		// Chamada de desenho - drawcall
@@ -200,11 +208,22 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
 
+	if (key == GLFW_KEY_KP_ADD && action == GLFW_PRESS)
+	{
+		scaleFactor += 0.1;
+	}
+
+	if (key == GLFW_KEY_KP_SUBTRACT && action == GLFW_PRESS)
+	{
+		scaleFactor -= 0.1;
+	}
+
 	if (key == GLFW_KEY_X && action == GLFW_PRESS)
 	{
 		rotateX = true;
 		rotateY = false;
 		rotateZ = false;
+		scaleFactor += 0.1;
 	}
 
 	if (key == GLFW_KEY_Y && action == GLFW_PRESS)
@@ -304,58 +323,58 @@ int setupGeometry()
 
 	GLfloat vertices[] = {
 		// Front face
-		-0.5, -0.5, 0.5, 1.0, 0.0, 0.0, // Vertex 0 - Red
-		0.5, -0.5, 0.5, 1.0, 0.0, 0.0, // Vertex 1 - Red
-		0.5, 0.5, 0.5, 1.0, 0.0, 0.0, // Vertex 2 - Red
+		-0.5, -0.5, 0.5, 1.0, 0.0, 0.0, 
+		0.5, -0.5, 0.5, 1.0, 0.0, 0.0,
+		0.5, 0.5, 0.5, 1.0, 0.0, 0.0, 
 
-		0.5, 0.5, 0.5, 1.0, 0.0, 0.0, // Vertex 3 - Red
-		-0.5, 0.5, 0.5, 1.0, 0.0, 0.0, // Vertex 4 - Red
-		-0.5, -0.5, 0.5, 1.0, 0.0, 0.0, // Vertex 5 - Red
+		0.5, 0.5, 0.5, 1.0, 0.0, 0.0, 
+		-0.5, 0.5, 0.5, 1.0, 0.0, 0.0, 
+		-0.5, -0.5, 0.5, 1.0, 0.0, 0.0, 
 
 		// Back face
-		-0.5, -0.5, -0.5, 0.0, 1.0, 0.0, // Vertex 6 - Green
-		-0.5, 0.5, -0.5, 0.0, 1.0, 0.0, // Vertex 7 - Green
-		0.5, 0.5, -0.5, 0.0, 1.0, 0.0, // Vertex 8 - Green
+		-0.5, -0.5, -0.5, 0.0, 1.0, 0.0, 
+		-0.5, 0.5, -0.5, 0.0, 1.0, 0.0, 
+		0.5, 0.5, -0.5, 0.0, 1.0, 0.0, 
 
-		0.5, 0.5, -0.5, 0.0, 1.0, 0.0, // Vertex 9 - Green
-		0.5, -0.5, -0.5, 0.0, 1.0, 0.0, // Vertex 10 - Green
-		-0.5, -0.5, -0.5, 0.0, 1.0, 0.0, // Vertex 11 - Green
+		0.5, 0.5, -0.5, 0.0, 1.0, 0.0, 
+		0.5, -0.5, -0.5, 0.0, 1.0, 0.0, 
+		-0.5, -0.5, -0.5, 0.0, 1.0, 0.0, 
 
 		// Left face
-		-0.5, 0.5, -0.5, 0.0, 0.0, 1.0, // Vertex 12 - Blue
-		-0.5, 0.5, 0.5, 0.0, 0.0, 1.0, // Vertex 13 - Blue
-		-0.5, -0.5, 0.5, 0.0, 0.0, 1.0, // Vertex 14 - Blue
+		-0.5, 0.5, -0.5, 0.0, 0.0, 1.0, 
+		-0.5, 0.5, 0.5, 0.0, 0.0, 1.0, 
+		-0.5, -0.5, 0.5, 0.0, 0.0, 1.0, 
 
-		-0.5, -0.5, 0.5, 0.0, 0.0, 1.0, // Vertex 15 - Blue
-		-0.5, -0.5, -0.5, 0.0, 0.0, 1.0, // Vertex 16 - Blue
-		-0.5, 0.5, -0.5, 0.0, 0.0, 1.0, // Vertex 17 - Blue
+		-0.5, -0.5, 0.5, 0.0, 0.0, 1.0, 
+		-0.5, -0.5, -0.5, 0.0, 0.0, 1.0, 
+		-0.5, 0.5, -0.5, 0.0, 0.0, 1.0, 
 
 		// Right face
-		0.5, 0.5, -0.5, 1.0, 1.0, 0.0, // Vertex 18 - Yellow
-		0.5, 0.5, 0.5, 1.0, 1.0, 0.0, // Vertex 19 - Yellow
-		0.5, -0.5, 0.5, 1.0, 1.0, 0.0, // Vertex 20 - Yellow
+		0.5, 0.5, -0.5, 1.0, 1.0, 0.0,
+		0.5, 0.5, 0.5, 1.0, 1.0, 0.0, 
+		0.5, -0.5, 0.5, 1.0, 1.0, 0.0, 
 
-		0.5, -0.5, 0.5, 1.0, 1.0, 0.0, // Vertex 21 - Yellow
-		0.5, -0.5, -0.5, 1.0, 1.0, 0.0, // Vertex 22 - Yellow
-		0.5, 0.5, -0.5, 1.0, 1.0, 0.0, // Vertex 23 - Yellow
+		0.5, -0.5, 0.5, 1.0, 1.0, 0.0, 
+		0.5, -0.5, -0.5, 1.0, 1.0, 0.0, 
+		0.5, 0.5, -0.5, 1.0, 1.0, 0.0, 
 
 		// Top face
-		-0.5, 0.5, -0.5, 1.0, 0.0, 1.0, // Vertex 24 - Magenta
-		-0.5, 0.5, 0.5, 1.0, 0.0, 1.0, // Vertex 25 - Magenta
-		0.5, 0.5, 0.5, 1.0, 0.0, 1.0, // Vertex 26 - Magenta
+		-0.5, 0.5, -0.5, 1.0, 0.0, 1.0, 
+		-0.5, 0.5, 0.5, 1.0, 0.0, 1.0, 
+		0.5, 0.5, 0.5, 1.0, 0.0, 1.0, 
 
-		0.5, 0.5, 0.5, 1.0, 0.0, 1.0, // Vertex 27 - Magenta
-		0.5, 0.5, -0.5, 1.0, 0.0, 1.0, // Vertex 28 - Magenta
-		-0.5, 0.5, -0.5, 1.0, 0.0, 1.0, // Vertex 29 - Magenta
+		0.5, 0.5, 0.5, 1.0, 0.0, 1.0, 
+		0.5, 0.5, -0.5, 1.0, 0.0, 1.0, 
+		-0.5, 0.5, -0.5, 1.0, 0.0, 1.0,
 
 		// Bottom face
-		-0.5, -0.5, -0.5, 0.0, 1.0, 1.0, // Vertex 30 - Cyan
-		0.5, -0.5, -0.5, 0.0, 1.0, 1.0, // Vertex 31 - Cyan
-		0.5, -0.5, 0.5, 0.0, 1.0, 1.0, // Vertex 32 - Cyan
+		-0.5, -0.5, -0.5, 0.0, 1.0, 1.0, 
+		0.5, -0.5, -0.5, 0.0, 1.0, 1.0, 
+		0.5, -0.5, 0.5, 0.0, 1.0, 1.0, 
 
-		0.5, -0.5, 0.5, 0.0, 1.0, 1.0, // Vertex 33 - Cyan
-		-0.5, -0.5, 0.5, 0.0, 1.0, 1.0, // Vertex 34 - Cyan
-		-0.5, -0.5, -0.5, 0.0, 1.0, 1.0 // Vertex 35 - Cyan
+		0.5, -0.5, 0.5, 0.0, 1.0, 1.0, 
+		-0.5, -0.5, 0.5, 0.0, 1.0, 1.0, 
+		-0.5, -0.5, -0.5, 0.0, 1.0, 1.0 
 	};
 
 
