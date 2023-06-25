@@ -39,11 +39,11 @@ int main()
 	Shader shader("../shaders/sprite.vs", "../shaders/sprite.fs");
 
 	//Carregando uma textura e armazenando o identificador na memória
-	GLuint texID = loadTexture("suzanne.png");
+	GLuint texID = loadTexture("SuzanneTriTextured.mtl");
 
 	// Gerando uma geometria de quadrilátero com coordenadas de textura
 	int nVerts;
-	GLuint VAO = loadObj("suzanne.obj", nVerts,glm::vec3(0,0,0));
+	GLuint VAO = loadObj("SuzanneTriTextured.obj", nVerts,glm::vec3(0,0,0));
 
 	glUseProgram(shader.ID);
 	glUniform1i(glGetUniformLocation(shader.ID, "tex_buffer"), 0);
@@ -91,8 +91,20 @@ int main()
 	return 0;
 }
 
-int loadTexture(string path)
+int loadTexture(string mtlFilePath)
 {
+	std::ifstream file(mtlFilePath);
+	std::string line;
+	std::string fileName;
+
+	while (std::getline(file, line)) {
+		if (line.find("map_Kd") != std::string::npos) {
+			size_t pos = line.find_last_of(" ");
+			fileName = line.substr(pos + 1);
+			break;
+		}
+	}
+
 	GLuint texID;
 
 	// Gera o identificador da textura na memória 
@@ -108,7 +120,7 @@ int loadTexture(string path)
 
 	//Carregamento da imagem
 	int width, height, nrChannels;
-	unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
+	unsigned char* data = stbi_load(fileName.c_str(), &width, &height, &nrChannels, 0);
 
 	if (data)
 	{
@@ -148,8 +160,6 @@ int loadObj(string filepath, int& nVerts, glm::vec3 color)
 	{
 		char line[100];
 		string sline;
-
-
 
 		while (!inputFile.eof())
 		{
