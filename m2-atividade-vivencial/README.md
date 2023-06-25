@@ -1,7 +1,3 @@
-# M2 Instanciando Objetos 3D
+# M2 Carregando Arquivos OBJ
 
-- Pressione X, Y e Z para rotacionar em cada eixo
-- Pressione A, S, W para transladar respectivamente nos eixos X, Y e Z
-- Pressione + ou - para variar a escala
-
-![image](https://github.com/GabrielTamujo/AtividadesCG/assets/30511610/65861f57-60db-40ef-af16-0590f63406e5)
+![m2-vivencial](https://github.com/GabrielTamujo/AtividadesCG/assets/30511610/bd8b9c12-02cc-47ba-a474-3825f7c4cad2)
