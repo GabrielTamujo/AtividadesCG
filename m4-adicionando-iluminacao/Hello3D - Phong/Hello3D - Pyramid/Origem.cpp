@@ -81,7 +81,7 @@ int main()
 
 	//Carregando OBJ
 	int nVerts;
-	GLuint VAO = loadObj("SuzanneTriTextured.obj", nVerts);
+	GLuint VAO = loadObj("../../3D_models/Suzanne/suzanneTriLowPoly.obj", nVerts);
 
 	Mesh suzanne;
 	suzanne.initialize(VAO, nVerts, &shader);
