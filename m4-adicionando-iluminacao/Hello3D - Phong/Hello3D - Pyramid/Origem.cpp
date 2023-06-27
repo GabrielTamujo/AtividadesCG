@@ -18,10 +18,10 @@ using namespace std;
 
 struct Material {
 	std::string name;
-	glm::vec3 ambient;
-	glm::vec3 diffuse;
-	glm::vec3 specular;
-	float shininess;
+	glm::vec3 ka;
+	glm::vec3 kd;
+	glm::vec3 ks;
+	float q;
 };
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
@@ -79,6 +79,7 @@ int main()
 	//Carregando uma textura e armazenando o identificador na memória
 	GLuint texID = loadTexture("SuzanneTriTextured.mtl");
 
+	//Carregando OBJ
 	int nVerts;
 	GLuint VAO = loadObj("SuzanneTriTextured.obj", nVerts);
 
@@ -86,10 +87,10 @@ int main()
 	suzanne.initialize(VAO, nVerts, &shader);
 
 	// Definir as propriedades do material da superfície
-	shader.setVec3("ka", material.ambient.r, material.ambient.g, material.ambient.b);
-	shader.setVec3("kd", material.diffuse.r, material.diffuse.g, material.diffuse.b);
-	shader.setVec3("ks", material.specular.r, material.specular.g, material.specular.b);
-	shader.setFloat("q", material.shininess);
+	shader.setVec3("ka", material.ka.r, material.ka.g, material.ka.b);
+	shader.setVec3("kd", material.kd.r, material.kd.g, material.kd.b);
+	shader.setVec3("ks", material.ks.r, material.ks.g, material.ks.b);
+	shader.setFloat("q", material.q);
 
 	//Definindo a fonte de luz pontual
   // Definindo as propriedades da fonte de luz
@@ -117,7 +118,6 @@ int main()
 		shader.setFloat("q", 10.0);
 		suzanne.update();
 		suzanne.draw();
-
 		// Troca os buffers da tela
 		glfwSwapBuffers(window);
 	}
@@ -175,19 +175,19 @@ Material loadMaterial(string filename) {
 		{
 			float r, g, b;
 			iss >> r >> g >> b;
-			material.ambient = glm::vec3(r, g, b);
+			material.ka = glm::vec3(r, g, b);
 		}
 		else if (keyword == "Ks")
 		{
 			float r, g, b;
 			iss >> r >> g >> b;
-			material.specular = glm::vec3(r, g, b);
+			material.ks = glm::vec3(r, g, b);
 		}
 		else if (keyword == "Kd" || keyword == "Ke")
 		{
 			float r, g, b;
 			iss >> r >> g >> b;
-			material.diffuse = glm::vec3(r, g, b);
+			material.kd = glm::vec3(r, g, b);
 		}
 		else if (keyword == "map_Kd")
 		{
@@ -198,7 +198,7 @@ Material loadMaterial(string filename) {
 		{
 			float shininess;
 			iss >> shininess;
-			material.shininess = shininess;
+			material.q = shininess;
 		}
 	}
 	file.close();
